@@ -1,18 +1,12 @@
-# base image
-FROM node:12.2.0-alpine
-
-# copy app to source
+# build environment
+FROM node:12.2.0-alpine as build
 COPY . /src
-
-# set working directory
 WORKDIR /src
+RUN npm install && \
+    npm run build
 
-# install and cache app dependencies
-RUN npm install --silent && \
-    npm install react-scripts@3.3.0 -g --silent
-
-# expose port
-EXPOSE 3000
-
-# start app
-CMD [ "npm", "start" ]
+# production environment
+FROM nginx:1.16.0-alpine
+COPY --from=build /src/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
