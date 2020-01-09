@@ -2,8 +2,8 @@
 FROM node:12.2.0-alpine as build
 COPY . /src
 WORKDIR /src
-RUN npm install && \
-    npm run build
+RUN npm install
+RUN npm run build
 
 # production environment
 FROM nginx:1.16.0-alpine
